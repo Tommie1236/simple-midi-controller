@@ -3,22 +3,26 @@
 # add source files
 add_executable(firmware
   main.cpp
+  usb_descriptors.c
 )
 
 # include submodules
 
-
+target_include_directories(firmware PRIVATE
+${CMAKE_CURRENT_LIST_DIR})
 
 # link in libraries (almost every hardware/<blah>.h or pico/<blah>.h is hardware_blah or pico_blah)
 target_link_libraries(firmware PRIVATE
     pico_stdlib
     hardware_spi
     hardware_gpio
+    tinyusb_device
+    tinyusb_board
 )
 
 # enable usb/uart stdout
-pico_enable_stdio_usb(firmware 1)
-pico_enable_stdio_uart(firmware 0) 
+pico_enable_stdio_usb(firmware 0)
+pico_enable_stdio_uart(firmware 1) 
 
 
 

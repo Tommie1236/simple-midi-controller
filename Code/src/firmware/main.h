@@ -20,37 +20,44 @@
 //              ┃ ┗ GP12          bank up
 //              ┗ GP13            bank down
 //
-//  GP17-25 Are available via small pads on the bottom side of the board.
+//  GP17-25 Are available via pads on the bottom side of the board.
 
 
 #ifndef MAIN_H
 #define MAIN_H
 
-#define MATRIX_ROWS         4
-#define MATRIX_COLS         8
+// Please don't change. this really simplified the code. TODO: may support remapping later.
+#define MATRIX_ROWS          4
+#define MATRIX_COLS          8
 
-#define ROW_0_PIN           0
-#define ROW_1_PIN           1
-#define ROW_2_PIN           2
-#define ROW_3_PIN           3
+#define ROW_0_PIN            0
+#define ROW_1_PIN            1
+#define ROW_2_PIN            2
+#define ROW_3_PIN            3
 
-#define COL_A_PIN           4
-#define COL_B_PIN           5
-#define COL_C_PIN           6
-#define COL_D_PIN           7
-#define COL_E_PIN           8
-#define COL_F_PIN           9
-#define COL_G_PIN           10
-#define COL_H_PIN           11
+#define COL_A_PIN            4
+#define COL_B_PIN            5
+#define COL_C_PIN            6
+#define COL_D_PIN            7
+#define COL_E_PIN            8
+#define COL_F_PIN            9
+#define COL_G_PIN            10
+#define COL_H_PIN            11
 
-#define BANK_UP_PIN         12
-#define BANK_DOWN_PIN       13
+#define BANK_UP_PIN          12
+#define BANK_DOWN_PIN        13
 
 
-#define MAX7219_CS_PIN      15
-#define MAX7219_CLK_PIN     26
-#define MAX7219_DOSI_PIN    27
+#define MAX7219_NUM_SEGMENTS 2
+#define MAX7219_SPI_PORT     spi1
 
+#define MAX7219_CS_PIN       15
+#define MAX7219_CLK_PIN      26
+#define MAX7219_DOSI_PIN     27
+
+// phiysical midi. maybe support later
+// #define MIDI_TX_PIN          28
+// #define MIDI_RX_PIN          29
 
 
 #endif // MAIN_H
