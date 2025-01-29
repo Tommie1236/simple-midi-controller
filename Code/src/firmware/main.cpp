@@ -46,21 +46,6 @@ int main() {
 void init_gpio() {
 
     // matrix and bank buttons
-    uint32_t matrix_out_mask = (1 << ROW_0_PIN) | 
-                               (1 << ROW_1_PIN) | 
-                               (1 << ROW_2_PIN) | 
-                               (1 << ROW_3_PIN);
-
-    uint32_t matrix_in_mask =  (1 << COL_A_PIN) |
-                               (1 << COL_B_PIN) |
-                               (1 << COL_C_PIN) |
-                               (1 << COL_D_PIN) |
-                               (1 << COL_E_PIN) |
-                               (1 << COL_F_PIN) |
-                               (1 << COL_G_PIN) |
-                               (1 << COL_H_PIN) |
-                               (1 << BANK_UP_PIN) |
-                               (1 << BANK_DOWN_PIN);
 
     gpio_set_dir_out_masked(matrix_out_mask); // set gpio 0-3 as outputs. 0-3 matrix rows
     gpio_set_dir_in_masked(matrix_in_mask); // set gpio 4-13 as inputs. 4-11 matrix columns, 12 bank up, 13 bank down
@@ -114,20 +99,6 @@ void midi_task() {
 void key_matrix_task() {
     // TODO: implement bank buttons 
     // TODO: support gpio remmaping
-    const uint32_t matrix_out_mask = (1 << ROW_0_PIN) | 
-                                     (1 << ROW_1_PIN) | 
-                                     (1 << ROW_2_PIN) | 
-                                     (1 << ROW_3_PIN);
-
-    const uint32_t matrix_in_mask =  (1 << COL_A_PIN) |
-                                     (1 << COL_B_PIN) |
-                                     (1 << COL_C_PIN) |
-                                     (1 << COL_D_PIN) |
-                                     (1 << COL_E_PIN) |
-                                     (1 << COL_F_PIN) |
-                                     (1 << COL_G_PIN) |
-                                     (1 << COL_H_PIN);
-
     gpio_put_masked(matrix_out_mask, 0); 
     gpio_put(ROW_0_PIN, 1);
     buttons_pressed = (gpio_get_all() & matrix_in_mask) << 4;

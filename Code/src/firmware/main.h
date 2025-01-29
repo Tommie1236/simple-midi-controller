@@ -26,6 +26,8 @@
 #ifndef MAIN_H
 #define MAIN_H
 
+#include "pico/stdlib.h"
+
 // Please don't change. this really simplified the code. TODO: may support remapping later.
 #define MATRIX_ROWS          4
 #define MATRIX_COLS          8
@@ -58,6 +60,23 @@
 // phiysical midi. maybe support later
 // #define MIDI_TX_PIN          28
 // #define MIDI_RX_PIN          29
+
+
+const uint32_t matrix_out_mask = (1 << ROW_0_PIN) | 
+                                 (1 << ROW_1_PIN) | 
+                                 (1 << ROW_2_PIN) | 
+                                 (1 << ROW_3_PIN);
+
+const uint32_t matrix_in_mask =  (1 << COL_A_PIN) |
+                                 (1 << COL_B_PIN) |
+                                 (1 << COL_C_PIN) |
+                                 (1 << COL_D_PIN) |
+                                 (1 << COL_E_PIN) |
+                                 (1 << COL_F_PIN) |
+                                 (1 << COL_G_PIN) |
+                                 (1 << COL_H_PIN);
+
+
 
 
 #endif // MAIN_H
