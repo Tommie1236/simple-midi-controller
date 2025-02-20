@@ -32,10 +32,11 @@
 #define MATRIX_ROWS          4
 #define MATRIX_COLS          8
 
-#define ROW_0_PIN            0
-#define ROW_1_PIN            1
-#define ROW_2_PIN            2
-#define ROW_3_PIN            3
+// TODO: flip values back if corrected in hardware
+#define ROW_0_PIN            3
+#define ROW_1_PIN            2 
+#define ROW_2_PIN            1
+#define ROW_3_PIN            0
 
 #define COL_A_PIN            4
 #define COL_B_PIN            5
@@ -55,19 +56,19 @@
 
 #define MAX7219_CS_PIN       15
 #define MAX7219_CLK_PIN      26
-#define MAX7219_DOSI_PIN     27
+#define MAX7219_MOSI_PIN     27
 
 // phiysical midi. maybe support later
 // #define MIDI_TX_PIN          28
 // #define MIDI_RX_PIN          29
 
 
-const uint32_t matrix_out_mask = (1 << ROW_0_PIN) | 
+const uint32_t matrix_in_mask =  (1 << ROW_0_PIN) | 
                                  (1 << ROW_1_PIN) | 
                                  (1 << ROW_2_PIN) | 
                                  (1 << ROW_3_PIN);
 
-const uint32_t matrix_in_mask =  (1 << COL_A_PIN) |
+const uint32_t matrix_out_mask = (1 << COL_A_PIN) |
                                  (1 << COL_B_PIN) |
                                  (1 << COL_C_PIN) |
                                  (1 << COL_D_PIN) |

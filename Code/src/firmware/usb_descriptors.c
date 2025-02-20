@@ -25,6 +25,11 @@
 
 #include "tusb.h"
 
+uint8_t const * tud_descriptor_configuration_cb(uint8_t index);
+uint8_t const * tud_descriptor_device_cb(void);
+uint16_t const* tud_descriptor_string_cb(uint8_t index, uint16_t langid);
+
+
 /* A combination of interfaces must have a unique product id, since PC will save device driver after the first plug.
  * Same VID/PID with different interface e.g MSC (first), then CDC (later) will possibly cause system error on PC.
  *
@@ -73,12 +78,14 @@ uint8_t const * tud_descriptor_device_cb(void)
 
 enum
 {
-  ITF_NUM_MIDI = 0,
+  ITF_NUM_CDC = 0,
+  ITF_NUM_CDC_DATA,
+  ITF_NUM_MIDI,
   ITF_NUM_MIDI_STREAMING,
   ITF_NUM_TOTAL
 };
 
-#define CONFIG_TOTAL_LEN  (TUD_CONFIG_DESC_LEN + TUD_MIDI_DESC_LEN)
+#define CONFIG_TOTAL_LEN  (TUD_CONFIG_DESC_LEN + TUD_CDC_DESC_LEN + TUD_MIDI_DESC_LEN)
 
 #if CFG_TUSB_MCU == OPT_MCU_LPC175X_6X || CFG_TUSB_MCU == OPT_MCU_LPC177X_8X || CFG_TUSB_MCU == OPT_MCU_LPC40XX
   // LPC 17xx and 40xx endpoint type (bulk/interrupt/iso) are fixed by its number
@@ -92,6 +99,9 @@ uint8_t const desc_fs_configuration[] =
 {
   // Config number, interface count, string index, total length, attribute, power in mA
   TUD_CONFIG_DESCRIPTOR(1, ITF_NUM_TOTAL, 0, CONFIG_TOTAL_LEN, TUSB_DESC_CONFIG_ATT_REMOTE_WAKEUP, 100),
+
+// CDC (Serial) Interface
+  TUD_CDC_DESCRIPTOR(ITF_NUM_CDC, 0, 0x82, 8, 0x03, 0x83, 64),
 
   // Interface number, string index, EP Out & EP In address, EP size
   TUD_MIDI_DESCRIPTOR(ITF_NUM_MIDI, 0, EPNUM_MIDI, 0x80 | EPNUM_MIDI, 64)
@@ -132,7 +142,7 @@ char const* string_desc_arr [] =
 {
   (const char[]) { 0x09, 0x04 }, // 0: is supported language is English (0x0409)
   "Raspberry Pi",                     // 1: Manufacturer
-  "Pico Demo Device",              // 2: Product
+  "TEST midi",              // 2: Product
   "123456",                      // 3: Serials, should use chip ID
 };
 
