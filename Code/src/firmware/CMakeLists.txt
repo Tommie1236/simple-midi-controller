@@ -18,6 +18,7 @@ target_link_libraries(firmware PRIVATE
     hardware_gpio
     tinyusb_device
     tinyusb_board
+    pico_unique_id
 )
 
 # enable usb/uart stdout
