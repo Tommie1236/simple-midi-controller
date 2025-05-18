@@ -27,6 +27,7 @@ uint32_t buttons_pressed = 0x00000000;
 uint32_t previous_buttons_pressed = 0x00000000;
 
 
+
 int main() {
     board_init(); 
     tusb_init();
@@ -36,10 +37,10 @@ int main() {
 
     while (1){
         tud_task();
-        key_matrix_task();
+        //key_matrix_task();
         //segment_display_task();
         midi_task();
-        sleep_ms(10);
+        //sleep_ms(10);
     }
 
 
@@ -105,6 +106,9 @@ void midi_task() {
         }
 
     }
+    msg[1] = 0;
+    msg[2] = 127;
+    tud_midi_n_stream_write(0, 0, msg, 3);
 
     previous_buttons_pressed = buttons_pressed;
 }
