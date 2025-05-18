@@ -4,10 +4,10 @@
 //      
 //               ┏━━━━━┓              
 //           ┏━━━┫     ┣━━━┓          
-//        5V ┃◎  ┗━━━━━┛  ◎┃ GP0  row 0
-//       Gnd ┃■           ◎┃ GP1  row 1
-//       3V3 ┃◎           ◎┃ GP2  row 2
-// rx   GP29 ┃◎           ◎┃ GP3  row 3
+//        5V ┃◎  ┗━━━━━┛  ◎┃ GP0  row 3
+//       Gnd ┃■           ◎┃ GP1  row 2
+//       3V3 ┃◎           ◎┃ GP2  row 1
+// rx   GP29 ┃◎           ◎┃ GP3  row 0
 // tx   GP28 ┃◎           ◎┃ GP4  col A
 // tx   GP27 ┃◎     □     ◎┃ GP5  col B
 // sck  GP26 ┃◎     ┗GP16 ◎┃ GP6  col C
