@@ -14,6 +14,7 @@ ${CMAKE_CURRENT_LIST_DIR})
 # link in libraries (almost every hardware/<blah>.h or pico/<blah>.h is hardware_blah or pico_blah)
 target_link_libraries(firmware PRIVATE
     pico_stdlib
+	pico_multicore
     hardware_spi
     hardware_gpio
     tinyusb_device

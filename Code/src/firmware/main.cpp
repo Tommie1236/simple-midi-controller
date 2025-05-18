@@ -1,9 +1,10 @@
 #include "main.h"
 
-
+	
 #include "pico/stdlib.h"
 #include "pico/binary_info.h"
 #include "pico/time.h"
+#include "pico/multicore.h"
 #include "hardware/gpio.h"
 #include "hardware/spi.h"
 #include "stdio.h"
@@ -28,21 +29,32 @@ uint32_t previous_buttons_pressed = 0x00000000;
 
 
 
-int main() {
+void core1_main(){
+    while (1){
+        tud_task();
+    }
+};
+
+void core0_main(){
     board_init(); 
     tusb_init();
     stdio_usb_init();
 
     init_gpio();
 
-    while (1){
-        tud_task();
-        //key_matrix_task();
-        //segment_display_task();
-        midi_task();
-        //sleep_ms(10);
-    }
+    multicore_launch_core1(&core1_main);
 
+    while(1) {
+        key_matrix_task();
+        midi_task();
+        //segment_display_task();
+	};
+};
+
+
+int main() {
+	
+	core0_main();
 
     return 0;
 }
@@ -106,9 +118,6 @@ void midi_task() {
         }
 
     }
-    msg[1] = 0;
-    msg[2] = 127;
-    tud_midi_n_stream_write(0, 0, msg, 3);
 
     previous_buttons_pressed = buttons_pressed;
 }
