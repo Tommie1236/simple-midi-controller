@@ -64,16 +64,23 @@ int main() {
 void init_gpio() {
     gpio_init_mask(matrix_out_mask | matrix_in_mask);
     gpio_set_function_masked(matrix_out_mask | matrix_in_mask, GPIO_FUNC_SIO);
-    gpio_init(BANK_UP_PIN);
-    gpio_init(BANK_DOWN_PIN);
+	// implement banks later
+    //gpio_init(BANK_UP_PIN);
+    //gpio_init(BANK_DOWN_PIN);
 
     gpio_set_dir_in_masked(matrix_in_mask); 
+	for (uint pin = 0; pin < 30; ++pin) {
+		if (your_mask & (1u << pin)) {
+			gpio_pull_down(pin);
+		}
+	}
+
     gpio_set_dir_out_masked(matrix_out_mask);
 
-    gpio_set_dir(BANK_UP_PIN, GPIO_IN);
-    gpio_set_dir(BANK_DOWN_PIN, GPIO_IN); 
-    gpio_pull_down(BANK_UP_PIN);
-    gpio_pull_down(BANK_DOWN_PIN);
+    //gpio_set_dir(BANK_UP_PIN, GPIO_IN);
+    //gpio_set_dir(BANK_DOWN_PIN, GPIO_IN); 
+    //gpio_pull_down(BANK_UP_PIN);
+    //gpio_pull_down(BANK_DOWN_PIN);
 
     
 
@@ -85,7 +92,7 @@ void init_gpio() {
 
     //spi_init(MAX7219_SPI_PORT, 10000 * 1000); // 10MHz
 
-    // phiysical midi        //TODO: maybe support later
+    // physical midi        //TODO: maybe support later
     // gpio_set_function(MIDI_TX_PIN, GPIO_FUNC_UART);
     // gpio_set_function(MIDI_RX_PIN, GPIO_FUNC_UART);
 
@@ -94,7 +101,7 @@ void init_gpio() {
 void midi_task() {
 
     uint8_t msg[3];
-    buttons_pressed = buttons_pressed_set.to_ulong();
+    //buttons_pressed = buttons_pressed_set.to_ulong();
     uint32_t changed_buttons = buttons_pressed ^ previous_buttons_pressed;
 
     msg[0] = 0x90; // Note on - Channel 1 TODO: apply bank
@@ -125,65 +132,23 @@ void midi_task() {
 void key_matrix_task() {
     // TODO: implement bank buttons 
     // TODO: support gpio remmaping
-    
-    gpio_put(COL_A_PIN, 1);
-    sleep_ms(10);
-    buttons_pressed_set.set(0, gpio_get(ROW_0_PIN));
-    buttons_pressed_set.set(8, gpio_get(ROW_1_PIN));
-    buttons_pressed_set.set(16, gpio_get(ROW_2_PIN));
-    buttons_pressed_set.set(24, gpio_get(ROW_3_PIN));
-    gpio_put(COL_A_PIN, 0);
-    gpio_put(COL_B_PIN, 1);
-    sleep_ms(10);
-    buttons_pressed_set.set(1, gpio_get(ROW_0_PIN));
-    buttons_pressed_set.set(9, gpio_get(ROW_1_PIN));
-    buttons_pressed_set.set(17, gpio_get(ROW_2_PIN));
-    buttons_pressed_set.set(25, gpio_get(ROW_3_PIN));
-    gpio_put(COL_B_PIN, 0);
-    gpio_put(COL_C_PIN, 1);
-    sleep_ms(10);
-    buttons_pressed_set.set(2, gpio_get(ROW_0_PIN));
-    buttons_pressed_set.set(10, gpio_get(ROW_1_PIN));
-    buttons_pressed_set.set(18, gpio_get(ROW_2_PIN));
-    buttons_pressed_set.set(26, gpio_get(ROW_3_PIN));
-    gpio_put(COL_C_PIN, 0);
-    gpio_put(COL_D_PIN, 1);
-    sleep_ms(10);
-    buttons_pressed_set.set(3, gpio_get(ROW_0_PIN));
-    buttons_pressed_set.set(11, gpio_get(ROW_1_PIN));
-    buttons_pressed_set.set(19, gpio_get(ROW_2_PIN));
-    buttons_pressed_set.set(27, gpio_get(ROW_3_PIN));
-    gpio_put(COL_D_PIN, 0);
-    gpio_put(COL_E_PIN, 1);
-    sleep_ms(10);
-    buttons_pressed_set.set(4, gpio_get(ROW_0_PIN));
-    buttons_pressed_set.set(12, gpio_get(ROW_1_PIN));
-    buttons_pressed_set.set(20, gpio_get(ROW_2_PIN));
-    buttons_pressed_set.set(28, gpio_get(ROW_3_PIN));
-    gpio_put(COL_E_PIN, 0);
-    gpio_put(COL_F_PIN, 1);
-    sleep_ms(10);
-    buttons_pressed_set.set(5, gpio_get(ROW_0_PIN));
-    buttons_pressed_set.set(13, gpio_get(ROW_1_PIN));
-    buttons_pressed_set.set(21, gpio_get(ROW_2_PIN));
-    buttons_pressed_set.set(29, gpio_get(ROW_3_PIN));
-    gpio_put(COL_F_PIN, 0);
-    gpio_put(COL_G_PIN, 1);
-    sleep_ms(10);
-    buttons_pressed_set.set(6, gpio_get(ROW_0_PIN));
-    buttons_pressed_set.set(14, gpio_get(ROW_1_PIN));
-    buttons_pressed_set.set(22, gpio_get(ROW_2_PIN));
-    buttons_pressed_set.set(30, gpio_get(ROW_3_PIN));
-    gpio_put(COL_G_PIN, 0);
-    gpio_put(COL_H_PIN, 1);
-    sleep_ms(10);
-    buttons_pressed_set.set(7, gpio_get(ROW_0_PIN));
-    buttons_pressed_set.set(15, gpio_get(ROW_1_PIN));
-    buttons_pressed_set.set(23, gpio_get(ROW_2_PIN));
-    buttons_pressed_set.set(31, gpio_get(ROW_3_PIN));
-    gpio_put(COL_H_PIN, 0);
 
-
+	gpio_put(ROW_0_PIN, 1);
+	sleep_ms(10);
+	buttons_pressed = !(gpio_get_all() & matrix_in_mask) << 4;
+	gpio_put(ROW_0_PIN, 0);
+	gpio_put(ROW_1_PIN, 1);
+	sleep_ms(10);
+	buttons_pressed = !(gpio_get_all() & matrix_in_mask) >> 4;
+	gpio_put(ROW_1_PIN, 0);
+	gpio_put(ROW_2_PIN, 1);
+	sleep_ms(10);
+	buttons_pressed = !(gpio_get_all() & matrix_in_mask) >> 12;
+	gpio_put(ROW_2_PIN, 0);
+	gpio_put(ROW_3_PIN, 1);
+	sleep_ms(10);
+	buttons_pressed = !(gpio_get_all() & matrix_in_mask) >> 20;
+	gpio_put(ROW_3_PIN, 0);
 
 
 }

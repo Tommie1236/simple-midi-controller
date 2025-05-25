@@ -63,12 +63,12 @@
 // #define MIDI_RX_PIN          29
 
 
-const uint32_t matrix_in_mask =  (1 << ROW_0_PIN) | 
+const uint32_t matrix_out_mask =  (1 << ROW_0_PIN) | 
                                  (1 << ROW_1_PIN) | 
                                  (1 << ROW_2_PIN) | 
                                  (1 << ROW_3_PIN);
 
-const uint32_t matrix_out_mask = (1 << COL_A_PIN) |
+const uint32_t matrix_in_mask = (1 << COL_A_PIN) |
                                  (1 << COL_B_PIN) |
                                  (1 << COL_C_PIN) |
                                  (1 << COL_D_PIN) |
