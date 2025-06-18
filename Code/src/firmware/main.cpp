@@ -70,7 +70,7 @@ void init_gpio() {
     //gpio_init(BANK_DOWN_PIN);
 
     gpio_set_dir_in_masked(matrix_in_mask); 
-	for (uint pin = 0; pin < 30; ++pin) {
+	for (uint pin = 0; pin < 32; ++pin) {
 		if (matrix_in_mask & (1u << pin)) {
 			gpio_pull_up(pin);
 		}
