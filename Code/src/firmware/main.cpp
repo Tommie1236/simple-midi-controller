@@ -71,7 +71,7 @@ void init_gpio() {
     gpio_set_dir_in_masked(matrix_in_mask); 
 	for (uint pin = 0; pin < 30; ++pin) {
 		if (matrix_in_mask & (1u << pin)) {
-			gpio_pull_down(pin);
+			gpio_pull_up(pin);
 		}
 	}
 
@@ -103,6 +103,7 @@ void midi_task() {
     uint8_t msg[3];
     //buttons_pressed = buttons_pressed_set.to_ulong();
     uint32_t changed_buttons = buttons_pressed ^ previous_buttons_pressed;
+	printf("buttons: %d \n", int(buttons_pressed));
 
     msg[0] = 0x90; // Note on - Channel 1 TODO: apply bank
 
@@ -133,22 +134,22 @@ void key_matrix_task() {
     // TODO: implement bank buttons 
     // TODO: support gpio remmaping
 
-	gpio_put(ROW_0_PIN, 1);
+	gpio_put(ROW_0_PIN, 0);
 	sleep_ms(10);
 	buttons_pressed = !(gpio_get_all() & matrix_in_mask) << 4;
-	gpio_put(ROW_0_PIN, 0);
-	gpio_put(ROW_1_PIN, 1);
-	sleep_ms(10);
-	buttons_pressed = !(gpio_get_all() & matrix_in_mask) >> 4;
+	gpio_put(ROW_0_PIN, 1);
 	gpio_put(ROW_1_PIN, 0);
-	gpio_put(ROW_2_PIN, 1);
 	sleep_ms(10);
-	buttons_pressed = !(gpio_get_all() & matrix_in_mask) >> 12;
+	buttons_pressed |= !(gpio_get_all() & matrix_in_mask) >> 4;
+	gpio_put(ROW_1_PIN, 1);
 	gpio_put(ROW_2_PIN, 0);
-	gpio_put(ROW_3_PIN, 1);
 	sleep_ms(10);
-	buttons_pressed = !(gpio_get_all() & matrix_in_mask) >> 20;
+	buttons_pressed |= !(gpio_get_all() & matrix_in_mask) >> 12;
+	gpio_put(ROW_2_PIN, 1);
 	gpio_put(ROW_3_PIN, 0);
+	sleep_ms(10);
+	buttons_pressed |= !(gpio_get_all() & matrix_in_mask) >> 20;
+	gpio_put(ROW_3_PIN, 1);
 
 
 }
