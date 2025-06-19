@@ -62,6 +62,7 @@ void core0_main(){
     while(1) {
         key_matrix_task();
         midi_task();
+        sleep_ms(1);
         //segment_display_task();
 	};
 };
