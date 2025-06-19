@@ -44,3 +44,4 @@ Pin Configuration
 ## Ai useage (hackclub Summer of Making)
 I've used ai in this project. for example to create a base for this readme but i have also used some chatbots with high level debugging if i got stuck.
 I've also had copilot enable in vscode when i started the project. but i've since switched to neovim and didn't add any ai or lsp yet. so mostly just high level debugging and writing text. (I'm very bad at this as you can probably already see.)
+I really don't like using ai to generate code snippets. sometimes copilot is usefull when you need a lot of repeating code with just a simple parameter changing. But the rest of the time it is pretty useless imo and things like chatgpt/gemini make too many mistakes or inefficiencies to be usefull for snippets.
