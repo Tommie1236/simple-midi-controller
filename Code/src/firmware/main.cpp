@@ -121,7 +121,7 @@ void midi_task() {
 	
     // debug_printf("buttons: %08X \n", int(buttons_pressed));
 
-    msg[0] = 0x90; // Note on - Channel 1 TODO: apply bank
+    msg[0] = 0x90 | MIDI_CHANNEL; // Note on - Channel <MIDI_CHANNEL> TODO: apply bank
 
     for (int i = 0; i < 32; i++) {
         uint32_t mask = 1 << i;

@@ -29,6 +29,8 @@
 #include "pico/stdlib.h"
 
 #define DEBUG_MODE           0
+// Temporary until proper settings menu and or banking system
+#define MIDI_CHANNEL         3
 
 // Please don't change. this really simplified the code. TODO: may support remapping later.
 #define MATRIX_ROWS          4
