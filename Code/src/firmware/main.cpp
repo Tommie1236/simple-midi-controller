@@ -8,6 +8,7 @@
 #include "hardware/gpio.h"
 #include "hardware/spi.h"
 #include "stdio.h"
+#include "cstdarg"
 #include "bitset"
 
 #include "bsp/board.h"
@@ -28,6 +29,19 @@ uint32_t buttons_pressed = 0x00000000;
 uint32_t previous_buttons_pressed = 0x00000000;
 
 const uint8_t row_pins[MATRIX_ROWS] = {ROW_0_PIN, ROW_1_PIN, ROW_2_PIN, ROW_3_PIN};
+
+
+#if DEBUG_MODE
+#define debug_printf(format, ...) \
+    do { \
+        printf(format, ##__VA_ARGS__); \
+    } while (0)
+#else
+#define debug_printf(format, ...) \
+    do {} while (0)
+#endif
+
+
 
 
 void core1_main(){
@@ -102,9 +116,9 @@ void init_gpio() {
 void midi_task() {
 
     uint8_t msg[3];
-    //buttons_pressed = buttons_pressed_set.to_ulong();
     uint32_t changed_buttons = buttons_pressed ^ previous_buttons_pressed;
-	printf("buttons: %08X \n", int(buttons_pressed));
+	
+    // debug_printf("buttons: %08X \n", int(buttons_pressed));
 
     msg[0] = 0x90; // Note on - Channel 1 TODO: apply bank
 
@@ -117,11 +131,11 @@ void midi_task() {
             if (buttons_pressed & mask) {
                 // Button pressed
                 msg[2] = 127; // velocito / on
-                printf("Button %d pressed\n", i);
+                debug_printf("Button %d pressed\n", i);
             } else {
                 // Button released
                 msg[2] = 0; // velocito / off
-                printf("Button %d released\n", i);
+                debug_printf("Button %d released\n", i);
             }
             tud_midi_n_stream_write(0, 0, msg, 3);
         }

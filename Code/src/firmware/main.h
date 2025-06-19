@@ -28,6 +28,8 @@
 
 #include "pico/stdlib.h"
 
+#define DEBUG_MODE           0
+
 // Please don't change. this really simplified the code. TODO: may support remapping later.
 #define MATRIX_ROWS          4
 #define MATRIX_COLS          8
