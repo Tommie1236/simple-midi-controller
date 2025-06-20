@@ -8,8 +8,6 @@
 #include "hardware/gpio.h"
 #include "hardware/spi.h"
 #include "stdio.h"
-#include "cstdarg"
-#include "bitset"
 
 #include "bsp/board.h"
 #include "tusb.h"
@@ -24,7 +22,6 @@ void init_gpio(void);
 uint32_t tud_midi_n_stream_write(uint8_t itf, uint8_t cable_num, uint8_t const* buffer, uint32_t bufsize);  // vscode thinks this isn't defined, but is defined at compile and complies correctly. //TODO: remove when fixed or finished
 
 uint8_t bank = 0; 
-std::bitset<32> buttons_pressed_set = 0x00000000;
 uint32_t buttons_pressed = 0x00000000;
 uint32_t previous_buttons_pressed = 0x00000000;
 
