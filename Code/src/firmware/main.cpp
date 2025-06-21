@@ -1,6 +1,5 @@
 #include "main.h"
 
-	
 #include "pico/stdlib.h"
 #include "pico/binary_info.h"
 #include "pico/time.h"
@@ -14,10 +13,12 @@
 
 
 
-void midi_task(void);
-void key_matrix_task(void);
-void segment_display_task(void);
-void init_gpio(void);
+void midi_task();
+void key_matrix_task();
+void segment_display_task();
+void init_gpio();
+void init_segment_display();
+void init_phisical_midi();
 
 uint32_t tud_midi_n_stream_write(uint8_t itf, uint8_t cable_num, uint8_t const* buffer, uint32_t bufsize);  // vscode thinks this isn't defined, but is defined at compile and complies correctly. //TODO: remove when fixed or finished
 
@@ -53,6 +54,7 @@ void core0_main(){
     stdio_usb_init();
 
     init_gpio();
+    // init_segment_display();
 
     multicore_launch_core1(&core1_main);
 
@@ -84,6 +86,8 @@ void init_gpio() {
     gpio_set_dir_in_masked(matrix_in_mask); 
 	for (uint pin = 0; pin < 32; ++pin) {
 		if (matrix_in_mask & (1u << pin)) {
+
+            // Change to pull down with diodes in correct orientation
 			gpio_pull_up(pin);
 		}
 	}
@@ -95,21 +99,21 @@ void init_gpio() {
     //gpio_pull_down(BANK_UP_PIN);
     //gpio_pull_down(BANK_DOWN_PIN);
 
-    
+}
 
-    // segment display
-    //gpio_set_function(MAX7219_CS_PIN, GPIO_FUNC_SIO);
-    //gpio_set_function(MAX7219_CLK_PIN, GPIO_FUNC_SPI);
-    //gpio_set_function(MAX7219_MOSI_PIN, GPIO_FUNC_SPI);
-    //gpio_set_dir(MAX7219_CS_PIN, GPIO_OUT);
+void init_segment_display() {
+    spi_init(MAX7219_SPI_PORT, 10000 * 1000); // 10MHz
 
-    //spi_init(MAX7219_SPI_PORT, 10000 * 1000); // 10MHz
+    gpio_set_dir(MAX7219_CS_PIN, GPIO_OUT);
+    gpio_set_function(MAX7219_CS_PIN, GPIO_FUNC_SIO);
+    gpio_set_function(MAX7219_CLK_PIN, GPIO_FUNC_SPI);
+    gpio_set_function(MAX7219_MOSI_PIN, GPIO_FUNC_SPI);
+};
 
-    // physical midi        //TODO: maybe support later
+void init_phisical_midi () {
     // gpio_set_function(MIDI_TX_PIN, GPIO_FUNC_UART);
     // gpio_set_function(MIDI_RX_PIN, GPIO_FUNC_UART);
-
-}
+};
 
 void midi_task() {
 
@@ -144,6 +148,7 @@ void midi_task() {
 }
 
 void key_matrix_task() {
+    // Switch high/low values of gpio read when connecting diodes in correct orientation.
     buttons_pressed = 0;
 
     for ( int row_idx = 0; row_idx < MATRIX_ROWS; ++row_idx) {
