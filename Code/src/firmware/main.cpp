@@ -1,13 +1,17 @@
 #include "main.h"
 
+// rp2040 
 #include "pico/stdlib.h"
 #include "pico/binary_info.h"
 #include "pico/time.h"
 #include "pico/multicore.h"
 #include "hardware/gpio.h"
 #include "hardware/spi.h"
-#include "stdio.h"
 
+// c/cpp 
+#include <unordered_map>
+
+// tinyusb
 #include "bsp/board.h"
 #include "tusb.h"
 
@@ -19,6 +23,7 @@ void segment_display_task();
 void init_gpio();
 void init_segment_display();
 void init_phisical_midi();
+void check_debug();
 
 uint32_t tud_midi_n_stream_write(uint8_t itf, uint8_t cable_num, uint8_t const* buffer, uint32_t bufsize);  // vscode thinks this isn't defined, but is defined at compile and complies correctly. //TODO: remove when fixed or finished
 
@@ -29,7 +34,18 @@ uint32_t previous_buttons_pressed = 0x00000000;
 const uint8_t row_pins[MATRIX_ROWS] = {ROW_0_PIN, ROW_1_PIN, ROW_2_PIN, ROW_3_PIN};
 
 
-#if DEBUG_MODE
+enum class Debug_Mode {
+    PRINT_PRESSED = DEBUG_PRINT_PRESSED,
+    DISPLAY_LAST_BUTTON = DEBUG_DISPLAY_LAST_BUTTON,
+    CONTINUES_MIDI = DEBUG_CONTINUES_MIDI,
+    NUM_DEBUG_MODES
+};
+
+std::unordered_map<Debug_Mode, bool> debug_settings;
+
+
+// TODO: change to new debug modes.
+#if DEBUG_PRINT
 #define debug_printf(format, ...) \
     do { \
         printf(format, ##__VA_ARGS__); \
@@ -57,6 +73,8 @@ void core0_main(){
     // init_segment_display();
 
     multicore_launch_core1(&core1_main);
+
+    check_debug();
 
     while(1) {
         key_matrix_task();
@@ -113,6 +131,21 @@ void init_segment_display() {
 void init_phisical_midi () {
     // gpio_set_function(MIDI_TX_PIN, GPIO_FUNC_UART);
     // gpio_set_function(MIDI_RX_PIN, GPIO_FUNC_UART);
+};
+
+void check_debug() {
+    // read keyboard for debug keys
+    key_matrix_test();
+    if (buttons_pressed & 1) {
+        debug_settings[Debug_mode::DISPLAY_LAST_BUTTON] = true;
+        printf("[DEBUG] DISPLAY_LAST_BUTTON Active");
+    } else if (buttons_pressed & (1 << 1)) {
+        debug_settings[Debug_mode::PRINT_PRESSED_BUTTONS] = true;
+        printf("[DEBUG] PRINT_PRESSED_BUTTONS Active");
+    } else if (buttons_pressed & (1 << 2)) {
+        debug_settings[Debug_Mode::CONTINUES_MIDI] = true;
+        printf("[DEBUG] CONTINUES_MIDI Active");
+    };
 };
 
 void midi_task() {
