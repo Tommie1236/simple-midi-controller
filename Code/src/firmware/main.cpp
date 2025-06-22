@@ -135,13 +135,13 @@ void init_phisical_midi () {
 
 void check_debug() {
     // read keyboard for debug keys
-    key_matrix_test();
+    key_matrix_task();
     if (buttons_pressed & 1) {
-        debug_settings[Debug_mode::DISPLAY_LAST_BUTTON] = true;
+        debug_settings[Debug_Mode::DISPLAY_LAST_BUTTON] = true;
         printf("[DEBUG] DISPLAY_LAST_BUTTON Active");
     } else if (buttons_pressed & (1 << 1)) {
-        debug_settings[Debug_mode::PRINT_PRESSED_BUTTONS] = true;
-        printf("[DEBUG] PRINT_PRESSED_BUTTONS Active");
+        debug_settings[Debug_Mode::PRINT_PRESSED] = true;
+        printf("[DEBUG] PRINT_PRESSED Active");
     } else if (buttons_pressed & (1 << 2)) {
         debug_settings[Debug_Mode::CONTINUES_MIDI] = true;
         printf("[DEBUG] CONTINUES_MIDI Active");
