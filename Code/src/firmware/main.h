@@ -28,7 +28,7 @@
 
 #include "pico/stdlib.h"
 
-// Debug Modes, setting here turns the mode persistantly on.
+// Debug Modes, setting here turns the mode persistently on.
 // Pressing the according key on boot turn debug mode on for that session.
 // ONLY MEANT FOR EASIER DEVELOPMENT, Dont turn on in production compile
 #define DEBUG_PRINT_PRESSED         0
