@@ -33,7 +33,7 @@
 // ONLY MEANT FOR EASIER DEVELOPMENT, Dont turn on in production compile
 #define DEBUG_PRINT_PRESSED         0
 #define DEBUG_DISPLAY_LAST_BUTTON   0
-#define DEBUG_CONTINUES_MIDI        0
+#define DEBUG_CONTINUOUS_MIDI        0
 
 // Temporary until proper settings menu and or banking system
 #define MIDI_CHANNEL                0

@@ -39,7 +39,7 @@ const uint8_t row_pins[MATRIX_ROWS] = {ROW_0_PIN, ROW_1_PIN, ROW_2_PIN, ROW_3_PI
 enum class Debug_Mode {
     PRINT_PRESSED = DEBUG_PRINT_PRESSED,
     DISPLAY_LAST_BUTTON = DEBUG_DISPLAY_LAST_BUTTON,
-    CONTINUES_MIDI = DEBUG_CONTINUES_MIDI,
+    CONTINUOUS_MIDI = DEBUG_CONTINUOUS_MIDI,
     NUM_DEBUG_MODES
 };
 
@@ -132,8 +132,8 @@ void check_debug() {
         debug_settings[Debug_Mode::PRINT_PRESSED] = true;
         printf("[DEBUG] PRINT_PRESSED Active");
     } else if (buttons_pressed & (1 << 2)) {
-        debug_settings[Debug_Mode::CONTINUES_MIDI] = true;
-        printf("[DEBUG] CONTINUES_MIDI Active");
+        debug_settings[Debug_Mode::CONTINUOUS_MIDI] = true;
+        printf("[DEBUG] CONTINUOUS_MIDI Active");
     };
 };
 
@@ -142,7 +142,7 @@ void midi_task() {
     uint8_t msg[3];
     uint32_t changed_buttons = buttons_pressed ^ previous_buttons_pressed;
 
-    if (debug_settings[Debug_Mode::CONTINUES_MIDI]) {
+    if (debug_settings[Debug_Mode::CONTINUOUS_MIDI]) {
         no_messages_send_count++;
         if (no_messages_send_count > 10) {
             tud_midi_n_stream_write(0, 0, last_midi_message, 3);
