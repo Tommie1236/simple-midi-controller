@@ -9,7 +9,6 @@
 #include "hardware/spi.h"
 
 // c/cpp 
-#include <unordered_map>
 #include <cstring> // memcpy
 
 // tinyusb
@@ -36,15 +35,14 @@ uint32_t no_messages_send_count = 0;
 const uint8_t row_pins[MATRIX_ROWS] = {ROW_0_PIN, ROW_1_PIN, ROW_2_PIN, ROW_3_PIN};
 
 
-enum class Debug_Mode {
-    PRINT_PRESSED = DEBUG_PRINT_PRESSED,
-    DISPLAY_LAST_BUTTON = DEBUG_DISPLAY_LAST_BUTTON,
-    CONTINUOUS_MIDI = DEBUG_CONTINUOUS_MIDI,
+enum Debug_Mode {
+    PRINT_PRESSED,
+    DISPLAY_LAST_BUTTON,
+    CONTINUOUS_MIDI,
     NUM_DEBUG_MODES
 };
 
-std::unordered_map<Debug_Mode, bool> debug_settings;
-
+bool debug_settings[Debug_Mode::NUM_DEBUG_MODES];
 
 
 void core1_main(){
@@ -124,6 +122,11 @@ void init_phisical_midi () {
 
 void check_debug() {
     // read keyboard for debug keys
+
+    debug_settings[Debug_Mode::DISPLAY_LAST_BUTTON] = DEBUG_DISPLAY_LAST_BUTTON;
+    debug_settings[Debug_Mode::PRINT_PRESSED] = DEBUG_PRINT_PRESSED;
+    debug_settings[Debug_Mode::CONTINUOUS_MIDI] = DEBUG_CONTINUOUS_MIDI;
+
     key_matrix_task();
     if (buttons_pressed & 1) {
         debug_settings[Debug_Mode::DISPLAY_LAST_BUTTON] = true;
