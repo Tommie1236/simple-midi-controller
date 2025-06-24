@@ -60,6 +60,7 @@ void core0_main(){
     // init_segment_display();
 
     multicore_launch_core1(&core1_main);
+    sleep_ms(1000);
 
     check_debug();
 
@@ -121,22 +122,26 @@ void init_phisical_midi () {
 };
 
 void check_debug() {
-    // read keyboard for debug keys
 
     debug_settings[Debug_Mode::DISPLAY_LAST_BUTTON] = DEBUG_DISPLAY_LAST_BUTTON;
     debug_settings[Debug_Mode::PRINT_PRESSED] = DEBUG_PRINT_PRESSED;
     debug_settings[Debug_Mode::CONTINUOUS_MIDI] = DEBUG_CONTINUOUS_MIDI;
 
+    // read keyboard for debug keys
     key_matrix_task();
+    printf("buttons: %08X \n", int(buttons_pressed));
+
     if (buttons_pressed & 1) {
         debug_settings[Debug_Mode::DISPLAY_LAST_BUTTON] = true;
-        printf("[DEBUG] DISPLAY_LAST_BUTTON Active");
-    } else if (buttons_pressed & (1 << 1)) {
+        printf("[DEBUG] DISPLAY_LAST_BUTTON Active\n");
+    };
+    if (buttons_pressed & (1 << 1)) {
         debug_settings[Debug_Mode::PRINT_PRESSED] = true;
-        printf("[DEBUG] PRINT_PRESSED Active");
-    } else if (buttons_pressed & (1 << 2)) {
+        printf("[DEBUG] PRINT_PRESSED Active\n");
+    };
+    if (buttons_pressed & (1 << 2)) {
         debug_settings[Debug_Mode::CONTINUOUS_MIDI] = true;
-        printf("[DEBUG] CONTINUOUS_MIDI Active");
+        printf("[DEBUG] CONTINUOUS_MIDI Active\n");
     };
 };
 
@@ -147,7 +152,7 @@ void midi_task() {
 
     if (debug_settings[Debug_Mode::CONTINUOUS_MIDI]) {
         no_messages_send_count++;
-        if (no_messages_send_count > 10) {
+        if (no_messages_send_count > 100) {
             tud_midi_n_stream_write(0, 0, last_midi_message, 3);
             no_messages_send_count = 0;
         };
