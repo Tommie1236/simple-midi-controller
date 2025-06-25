@@ -111,7 +111,7 @@ void init_segment_display() {
     spi_init(MAX7219_SPI_PORT, 10000 * 1000); // 10MHz
 
     gpio_set_dir(MAX7219_CS_PIN, GPIO_OUT);
-    gpio_set_function(MAX7219_CS_PIN, GPIO_FUNC_SIO);
+    gpio_set_function(MAX7219_LOAD_PIN, GPIO_FUNC_SIO); //toggle after data transmission. not a spi cs
     gpio_set_function(MAX7219_CLK_PIN, GPIO_FUNC_SPI);
     gpio_set_function(MAX7219_MOSI_PIN, GPIO_FUNC_SPI);
 };

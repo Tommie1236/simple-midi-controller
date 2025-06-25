@@ -1,6 +1,8 @@
 
 // Config made for a RP2040 Zero. (Pi pico in smaller form factor)
-// For full pin functions see: https://datasheets.raspberrypi.com/rp2040/rp2040-datasheet.pdf (Section 1.4.3)
+// For full pin functions see:
+// https://datasheets.raspberrypi.com/rp2040/rp2040-datasheet.pdf
+// (Section 1.4.3)
 //      
 //               ┏━━━━━┓              
 //           ┏━━━┫     ┣━━━┓          
@@ -38,7 +40,8 @@
 // Temporary until proper settings menu and or banking system
 #define MIDI_CHANNEL                0
 
-// Please don't change. this really simplified the code. TODO: may support remapping later.
+// Please don't change. this really simplified the code.
+// TODO: may support remapping later.
 #define MATRIX_ROWS                 4
 #define MATRIX_COLS                 8
 
@@ -64,7 +67,7 @@
 #define MAX7219_NUM_SEGMENTS        2
 #define MAX7219_SPI_PORT            spi1
 
-#define MAX7219_CS_PIN              15
+#define MAX7219_LOAD_PIN              15
 #define MAX7219_CLK_PIN             26
 #define MAX7219_MOSI_PIN            27
 
