@@ -1,0 +1,4 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "simple-midi-controller")(type "KiCad")(uri "${KIPRJMOD}/simple-midi-controller.pretty")(options "")(descr ""))
+)
