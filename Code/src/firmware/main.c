@@ -9,7 +9,7 @@
 #include "hardware/spi.h"
 
 // c/cpp 
-#include <cstring> // memcpy
+#include <string.h> // memcpy
 
 // tinyusb
 #include "bsp/board.h"
@@ -35,14 +35,14 @@ uint32_t no_messages_send_count = 0;
 const uint8_t row_pins[MATRIX_ROWS] = {ROW_0_PIN, ROW_1_PIN, ROW_2_PIN, ROW_3_PIN};
 
 
-enum Debug_Mode {
+typedef enum {
     PRINT_PRESSED,
     DISPLAY_LAST_BUTTON,
     CONTINUOUS_MIDI,
     NUM_DEBUG_MODES
-};
+} Debug_Mode;
 
-bool debug_settings[Debug_Mode::NUM_DEBUG_MODES];
+bool debug_settings[NUM_DEBUG_MODES];
 
 
 void core1_main(){
@@ -110,7 +110,7 @@ void init_gpio() {
 void init_segment_display() {
     spi_init(MAX7219_SPI_PORT, 10000 * 1000); // 10MHz
 
-    gpio_set_dir(MAX7219_CS_PIN, GPIO_OUT);
+    gpio_set_dir(MAX7219_LOAD_PIN, GPIO_OUT);
     gpio_set_function(MAX7219_LOAD_PIN, GPIO_FUNC_SIO); //toggle after data transmission. not a spi cs
     gpio_set_function(MAX7219_CLK_PIN, GPIO_FUNC_SPI);
     gpio_set_function(MAX7219_MOSI_PIN, GPIO_FUNC_SPI);
@@ -123,24 +123,24 @@ void init_phisical_midi () {
 
 void check_debug() {
 
-    debug_settings[Debug_Mode::DISPLAY_LAST_BUTTON] = DEBUG_DISPLAY_LAST_BUTTON;
-    debug_settings[Debug_Mode::PRINT_PRESSED] = DEBUG_PRINT_PRESSED;
-    debug_settings[Debug_Mode::CONTINUOUS_MIDI] = DEBUG_CONTINUOUS_MIDI;
+    debug_settings[DISPLAY_LAST_BUTTON] = DEBUG_DISPLAY_LAST_BUTTON;
+    debug_settings[PRINT_PRESSED] = DEBUG_PRINT_PRESSED;
+    debug_settings[CONTINUOUS_MIDI] = DEBUG_CONTINUOUS_MIDI;
 
     // read keyboard for debug keys
     key_matrix_task();
-    printf("buttons: %08X \n", int(buttons_pressed));
+    printf("buttons: %08X \n", (int)buttons_pressed);
 
     if (buttons_pressed & 1) {
-        debug_settings[Debug_Mode::DISPLAY_LAST_BUTTON] = true;
+        debug_settings[DISPLAY_LAST_BUTTON] = true;
         printf("[DEBUG] DISPLAY_LAST_BUTTON Active\n");
     };
     if (buttons_pressed & (1 << 1)) {
-        debug_settings[Debug_Mode::PRINT_PRESSED] = true;
+        debug_settings[PRINT_PRESSED] = true;
         printf("[DEBUG] PRINT_PRESSED Active\n");
     };
     if (buttons_pressed & (1 << 2)) {
-        debug_settings[Debug_Mode::CONTINUOUS_MIDI] = true;
+        debug_settings[CONTINUOUS_MIDI] = true;
         printf("[DEBUG] CONTINUOUS_MIDI Active\n");
     };
 };
@@ -150,7 +150,7 @@ void midi_task() {
     uint8_t msg[3];
     uint32_t changed_buttons = buttons_pressed ^ previous_buttons_pressed;
 
-    if (debug_settings[Debug_Mode::CONTINUOUS_MIDI]) {
+    if (debug_settings[CONTINUOUS_MIDI]) {
         no_messages_send_count++;
         if (no_messages_send_count > 100) {
             tud_midi_n_stream_write(0, 0, last_midi_message, 3);
@@ -158,8 +158,8 @@ void midi_task() {
         };
     };
 	
-    if (debug_settings[Debug_Mode::PRINT_PRESSED]) {
-        printf("buttons: %08X \n", int(buttons_pressed));
+    if (debug_settings[PRINT_PRESSED]) {
+        printf("buttons: %08X \n", (int)buttons_pressed);
     };
 
     msg[0] = 0x90 | MIDI_CHANNEL; // Note on - Channel <MIDI_CHANNEL> TODO: apply bank
@@ -174,7 +174,7 @@ void midi_task() {
                 // Button pressed
                 msg[2] = 127; // velocito / on
 
-                if (debug_settings[Debug_Mode::PRINT_PRESSED]) {
+                if (debug_settings[PRINT_PRESSED]) {
                     printf("Button %d pressed\n", i);
                 };
 
@@ -182,7 +182,7 @@ void midi_task() {
                 // Button released
                 msg[2] = 0; // velocito / off
  
-                if (debug_settings[Debug_Mode::PRINT_PRESSED]) {
+                if (debug_settings[PRINT_PRESSED]) {
                     printf("Button %d released\n", i);
                 };               
             }
