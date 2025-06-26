@@ -32,7 +32,7 @@
 
 // Debug Modes, setting here turns the mode persistently on.
 // Pressing the according key on boot turn debug mode on for that session.
-// ONLY MEANT FOR EASIER DEVELOPMENT, Dont turn on in production compile
+// ONLY MEANT FOR EASIER DEVELOPMENT, Don't turn on in production compile
 #define DEBUG_PRINT_PRESSED         0
 #define DEBUG_DISPLAY_LAST_BUTTON   0
 #define DEBUG_CONTINUOUS_MIDI       0
