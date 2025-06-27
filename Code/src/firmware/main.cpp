@@ -25,6 +25,8 @@ void init_segment_display();
 void init_phisical_midi();
 void check_debug();
 
+uint8_t current_bank;
+
 uint32_t tud_midi_n_stream_write(uint8_t itf, uint8_t cable_num, uint8_t const* buffer, uint32_t bufsize);  // vscode thinks this isn't defined, but is defined at compile and complies correctly. //TODO: remove when fixed or finished
 
 uint8_t bank = 0; 
@@ -112,10 +114,10 @@ void init_gpio() {
 
     gpio_set_dir_out_masked(matrix_out_mask);
 
-    //gpio_set_dir(BANK_UP_PIN, GPIO_IN);
-    //gpio_set_dir(BANK_DOWN_PIN, GPIO_IN); 
-    //gpio_pull_down(BANK_UP_PIN);
-    //gpio_pull_down(BANK_DOWN_PIN);
+    gpio_set_dir(BANK_UP_PIN, GPIO_IN);
+    gpio_set_dir(BANK_DOWN_PIN, GPIO_IN); 
+    gpio_pull_up(BANK_UP_PIN);
+    gpio_pull_up(BANK_DOWN_PIN);
 
 }
 
@@ -155,14 +157,14 @@ void midi_task() {
 	
     // debug_printf("buttons: %08X \n", int(buttons_pressed));
 
-    msg[0] = 0x90 | MIDI_CHANNEL; // Note on - Channel <MIDI_CHANNEL> TODO: apply bank
+    msg[0] = 0x90 | (bank / 4); 
 
     for (int i = 0; i < 32; i++) {
         uint32_t mask = 1 << i;
 
         if (changed_buttons & mask) {
             
-            msg[1] = i; // Note number TODO: apply bank
+            msg[1] = i + ((current_bank % 4) * 32); // Note number TODO: apply bank
             if (buttons_pressed & mask) {
                 // Button pressed
                 msg[2] = 127; // velocito / on
@@ -181,6 +183,25 @@ void midi_task() {
 }
 
 void key_matrix_task() {
+
+    uint32_t gpio_value = gpio_get_all();
+
+    if (gpio_value & (1 << BANK_UP_PIN)) {
+        if (current_bank == 63) {
+            current_bank = 0;
+        } else {
+            current_bank++;
+        };
+    };
+ 
+    if (gpio_value & (1 << BANK_DOWN_PIN)) {
+        if (current_bank == 0) {
+            current_bank = 63;
+        } else {
+            current_bank--;
+        };
+    };   
+    
     // Switch high/low values of gpio read when connecting diodes in correct orientation.
     buttons_pressed = 0;
 
