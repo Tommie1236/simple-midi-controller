@@ -29,7 +29,6 @@ uint8_t current_bank;
 
 uint32_t tud_midi_n_stream_write(uint8_t itf, uint8_t cable_num, uint8_t const* buffer, uint32_t bufsize);  // vscode thinks this isn't defined, but is defined at compile and complies correctly. //TODO: remove when fixed or finished
 
-uint8_t bank = 0; 
 uint32_t buttons_pressed = 0x00000000;
 uint32_t previous_buttons_pressed = 0x00000000;
 
@@ -157,7 +156,7 @@ void midi_task() {
 	
     // debug_printf("buttons: %08X \n", int(buttons_pressed));
 
-    msg[0] = 0x90 | (bank / 4); 
+    msg[0] = 0x90 | (current_bank / 4); 
 
     for (int i = 0; i < 32; i++) {
         uint32_t mask = 1 << i;
