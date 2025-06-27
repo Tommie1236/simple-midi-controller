@@ -42,8 +42,8 @@ Pin Configuration
   - [ ] add banking support
   - [ ] add a menu for configuration?
   - [ ] Add full hardware assembly and wiring instructions
-  - [ ] create pcb for easier replication without the big amount of soldering perfboard requires.
-  - [ ] ^ also schematic?
+  - [x] create pcb for easier replication without the big amount of soldering perfboard requires.
+  - [x] ^ also schematic?
   
 ## Ai useage (hackclub Summer of Making)
 I've used ai in this project. for example to create a base for this readme but i have also used some chatbots with high level debugging if i got stuck.
