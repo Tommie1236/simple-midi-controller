@@ -80,7 +80,7 @@
     "files": [
       {
         "name": "simple-midi-controller.kicad_sch",
-        "open": false,
+        "open": true,
         "window": {
           "display": 0,
           "maximized": true,
@@ -99,7 +99,7 @@
           "pos_x": 0,
           "pos_y": 0,
           "size_x": 959,
-          "size_y": 488
+          "size_y": 414
         }
       }
     ]
