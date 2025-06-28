@@ -24,8 +24,8 @@ void init_segment_display();
 void init_phisical_midi();
 void check_debug();
 
+uint8_t current_bank = 0;
 
-uint8_t bank = 0; 
 uint32_t buttons_pressed = 0x00000000;
 uint32_t previous_buttons_pressed = 0x00000000;
 
@@ -100,10 +100,10 @@ void init_gpio() {
 
     gpio_set_dir_out_masked(matrix_out_mask);
 
-    //gpio_set_dir(BANK_UP_PIN, GPIO_IN);
-    //gpio_set_dir(BANK_DOWN_PIN, GPIO_IN); 
-    //gpio_pull_down(BANK_UP_PIN);
-    //gpio_pull_down(BANK_DOWN_PIN);
+    gpio_set_dir(BANK_UP_PIN, GPIO_IN);
+    gpio_set_dir(BANK_DOWN_PIN, GPIO_IN); 
+    gpio_pull_up(BANK_UP_PIN);
+    gpio_pull_up(BANK_DOWN_PIN);
 
 }
 
@@ -162,14 +162,15 @@ void midi_task() {
         printf("buttons: %08X \n", (int)buttons_pressed);
     };
 
-    msg[0] = 0x90 | MIDI_CHANNEL; // Note on - Channel <MIDI_CHANNEL> TODO: apply bank
+    msg[0] = 0x90 | (current_bank / 4); 
 
     for (int i = 0; i < 32; i++) {
         uint32_t mask = 1 << i;
 
         if (changed_buttons & mask) {
             
-            msg[1] = i; // Note number TODO: apply bank
+            msg[1] = i + ((current_bank % 4) * 32); 
+
             if (buttons_pressed & mask) {
                 // Button pressed
                 msg[2] = 127; // velocito / on
@@ -197,7 +198,35 @@ void midi_task() {
     previous_buttons_pressed = buttons_pressed;
 }
 
+
+static bool bank_up_last = true;
+static bool bank_down_last = true;
+
 void key_matrix_task() {
+
+    bool bank_up_current = gpio_get(BANK_UP_PIN);
+    bool bank_down_current = gpio_get(BANK_DOWN_PIN);
+
+    if (!bank_up_current & bank_up_last) {
+        if (current_bank == 63) {
+            current_bank = 0;
+        } else {
+            current_bank++;
+        }
+    }
+
+    if (!bank_down_current & bank_down_last) {
+        if (current_bank == 0) {
+            current_bank = 63;
+        } else {
+            current_bank--;
+        }
+    }
+
+    bank_up_last = bank_up_current;
+    bank_down_last = bank_down_current;
+
+
     // Switch high/low values of gpio read when connecting diodes in correct orientation.
     buttons_pressed = 0;
 

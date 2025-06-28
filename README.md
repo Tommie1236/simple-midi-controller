@@ -1,3 +1,5 @@
+![](https://hackatime-badge.hackclub.com/U07F798D3NF/simple-midi-controller)
+
 # Simple MIDI Controller
 
 ### A simple 32-button MIDI controller with bank support, built around the RP2040 microcontroller (e.g., RP2040-Zero, but other RP2040 boards should work with appropriate pin changes). Designed for compatibility with any software that accepts USB MIDI input.
@@ -40,8 +42,8 @@ Pin Configuration
   - [ ] add banking support
   - [ ] add a menu for configuration?
   - [ ] Add full hardware assembly and wiring instructions
-  - [ ] create pcb for easier replication without the big amount of soldering perfboard requires.
-  - [ ] ^ also schematic?
+  - [x] create pcb for easier replication without the big amount of soldering perfboard requires.
+  - [x] ^ also schematic?
   
 ## Ai useage (hackclub Summer of Making)
 I've used ai in this project. for example to create a base for this readme but i have also used some chatbots with high level debugging if i got stuck.
