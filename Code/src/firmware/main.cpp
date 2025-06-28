@@ -25,7 +25,7 @@ void init_segment_display();
 void init_phisical_midi();
 void check_debug();
 
-uint8_t current_bank;
+uint8_t current_bank = 0;
 
 uint32_t tud_midi_n_stream_write(uint8_t itf, uint8_t cable_num, uint8_t const* buffer, uint32_t bufsize);  // vscode thinks this isn't defined, but is defined at compile and complies correctly. //TODO: remove when fixed or finished
 
@@ -181,26 +181,35 @@ void midi_task() {
     previous_buttons_pressed = buttons_pressed;
 }
 
+
+static bool bank_up_last = true;
+static bool bank_down_last = true;
+
 void key_matrix_task() {
 
-    uint32_t gpio_value = gpio_get_all();
+    bool bank_up_current = gpio_get(BANK_UP_PIN);
+    bool bank_down_current = gpio_get(BANK_DOWN_PIN);
 
-    if (gpio_value & (1 << BANK_UP_PIN)) {
+    if (!bank_up_current & bank_up_last) {
         if (current_bank == 63) {
             current_bank = 0;
         } else {
             current_bank++;
-        };
-    };
- 
-    if (gpio_value & (1 << BANK_DOWN_PIN)) {
+        }
+    }
+
+    if (!bank_down_current & bank_down_last) {
         if (current_bank == 0) {
             current_bank = 63;
         } else {
             current_bank--;
-        };
-    };   
-    
+        }
+    }
+
+    bank_up_last = bank_up_current;
+    bank_down_last = bank_down_current;
+
+
     // Switch high/low values of gpio read when connecting diodes in correct orientation.
     buttons_pressed = 0;
 
