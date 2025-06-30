@@ -1,6 +1,8 @@
 
 // Config made for a RP2040 Zero. (Pi pico in smaller form factor)
-// For full pin functions see: https://datasheets.raspberrypi.com/rp2040/rp2040-datasheet.pdf (Section 1.4.3)
+// For full pin functions see:
+// https://datasheets.raspberrypi.com/rp2040/rp2040-datasheet.pdf
+// (Section 1.4.3)
 //      
 //               ┏━━━━━┓              
 //           ┏━━━┫     ┣━━━┓          
@@ -28,14 +30,15 @@
 
 #include "pico/stdlib.h"
 
-// Debug Modes, setting here turns the mode persistantly on.
+// Debug Modes, setting here turns the mode persistently on.
 // Pressing the according key on boot turn debug mode on for that session.
-// ONLY MEANT FOR EASIER DEVELOPMENT, Dont turn on in production compile
+// ONLY MEANT FOR EASIER DEVELOPMENT, Don't turn on in production compile
 #define DEBUG_PRINT_PRESSED         0
 #define DEBUG_DISPLAY_LAST_BUTTON   0
-#define DEBUG_CONTINUES_MIDI        0
+#define DEBUG_CONTINUOUS_MIDI       0
 
-// Please don't change. this really simplified the code. TODO: may support remapping later.
+// Please don't change. this really simplified the code.
+// TODO: may support remapping later.
 #define MATRIX_ROWS                 4
 #define MATRIX_COLS                 8
 
@@ -61,7 +64,7 @@
 #define MAX7219_NUM_SEGMENTS        2
 #define MAX7219_SPI_PORT            spi1
 
-#define MAX7219_CS_PIN              15
+#define MAX7219_LOAD_PIN              15
 #define MAX7219_CLK_PIN             26
 #define MAX7219_MOSI_PIN            27
 
