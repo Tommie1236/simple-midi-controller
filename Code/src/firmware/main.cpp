@@ -32,15 +32,32 @@ uint32_t tud_midi_n_stream_write(uint8_t itf, uint8_t cable_num, uint8_t const* 
 uint32_t buttons_pressed = 0x00000000;
 uint32_t previous_buttons_pressed = 0x00000000;
 
-const uint8_t row_pins[MATRIX_ROWS] = {ROW_0_PIN, ROW_1_PIN, ROW_2_PIN, ROW_3_PIN};
+const uint8_t row_pins[MATRIX_ROWS] =
+    {
+        ROW_0_PIN,
+        ROW_1_PIN,
+        ROW_2_PIN,
+        ROW_3_PIN
+    };
 
+const uint8_t collumn_pins[MATRIX_COLS] =
+    {
+        COL_A_PIN,
+        COL_B_PIN,
+        COL_C_PIN,
+        COL_D_PIN,
+        COL_E_PIN,
+        COL_F_PIN,
+        COL_G_PIN,
+        COL_H_PIN
+    };
 
 enum class Debug_Mode {
     PRINT_PRESSED = DEBUG_PRINT_PRESSED,
     DISPLAY_LAST_BUTTON = DEBUG_DISPLAY_LAST_BUTTON,
     CONTINUES_MIDI = DEBUG_CONTINUES_MIDI,
     NUM_DEBUG_MODES
-};
+}
 
 std::unordered_map<Debug_Mode, bool> debug_settings;
 
@@ -210,7 +227,6 @@ void key_matrix_task() {
     bank_down_last = bank_down_current;
 
 
-    // Switch high/low values of gpio read when connecting diodes in correct orientation.
     buttons_pressed = 0;
 
     for ( int row_idx = 0; row_idx < MATRIX_ROWS; ++row_idx) {
@@ -222,11 +238,8 @@ void key_matrix_task() {
 
         uint32_t gpio_state = gpio_get_all();
 
-        uint8_t columns_byte = ~(uint8_t)((gpio_state & matrix_in_mask) >> 4 );
-        columns_byte &= 0xFF;
-
-        buttons_pressed |= ((uint8_t) columns_byte << (row_idx * MATRIX_COLS));
-        gpio_put(row_pins[row_idx], 1);
+        for (int collumn = 0; collumn < MATRIX_COLS; ++collumn) {
+            uint8_t pin = collumn_pins[collumn];
+        }
     }
-
 }
