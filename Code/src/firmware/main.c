@@ -59,24 +59,6 @@ typedef enum {
     NUM_DEBUG_MODES
 }
 
-std::unordered_map<Debug_Mode, bool> debug_settings;
-
-
-// TODO: change to new debug modes.
-#if DEBUG_PRINT
-#define debug_printf(format, ...) \
-    do { \
-        printf(format, ##__VA_ARGS__); \
-    } while (0)
-#else
-#define debug_printf(format, ...) \
-    do {} while (0)
-#endif
-
-=======
-} Debug_Mode;
->>>>>>> debug:Code/src/firmware/main.c
-
 bool debug_settings[NUM_DEBUG_MODES];
 
 
@@ -120,15 +102,13 @@ int main() {
 void init_gpio() {
     gpio_init_mask(matrix_out_mask | matrix_in_mask);
     gpio_set_function_masked(matrix_out_mask | matrix_in_mask, GPIO_FUNC_SIO);
-	// implement banks later
-    //gpio_init(BANK_UP_PIN);
-    //gpio_init(BANK_DOWN_PIN);
+    gpio_init(BANK_UP_PIN);
+    gpio_init(BANK_DOWN_PIN);
 
     gpio_set_dir_in_masked(matrix_in_mask); 
 	for (uint pin = 0; pin < 32; ++pin) {
 		if (matrix_in_mask & (1u << pin)) {
 
-            // Change to pull down with diodes in correct orientation
 			gpio_pull_up(pin);
 		}
 	}
@@ -234,10 +214,11 @@ void midi_task() {
 }
 
 
-static bool bank_up_last = true;
-static bool bank_down_last = true;
 
 void key_matrix_task() {
+
+    static bool bank_up_last = true;
+    static bool bank_down_last = true;
 
     bool bank_up_current = gpio_get(BANK_UP_PIN);
     bool bank_down_current = gpio_get(BANK_DOWN_PIN);
