@@ -42,11 +42,10 @@
 #define MATRIX_ROWS                 4
 #define MATRIX_COLS                 8
 
-// TODO: flip row values back if corrected in hardware
-#define ROW_0_PIN                   3
-#define ROW_1_PIN                   2
-#define ROW_2_PIN                   1
-#define ROW_3_PIN                   0
+#define ROW_0_PIN                   0
+#define ROW_1_PIN                   1
+#define ROW_2_PIN                   2
+#define ROW_3_PIN                   3
 
 #define COL_A_PIN                   4
 #define COL_B_PIN                   5
