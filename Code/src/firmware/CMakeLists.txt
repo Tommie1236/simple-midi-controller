@@ -1,12 +1,10 @@
 # Code/src/firmware/CMakeLists.txt
 
-# add source files
 add_executable(firmware
   main.c
   usb_descriptors.c
 )
 
-# include submodules
 
 target_include_directories(firmware PRIVATE
 ${CMAKE_CURRENT_LIST_DIR})
@@ -20,6 +18,8 @@ target_link_libraries(firmware PRIVATE
     tinyusb_device
     tinyusb_board
     pico_unique_id
+
+    max7219_driver
 )
 
 # enable usb/uart stdout
@@ -59,7 +59,6 @@ target_compile_definitions(firmware PRIVATE
 
 # create map/bin/hex file etc.
 pico_add_extra_outputs(firmware)
-#pico_add_dis_output2(firmware)
   
 
 # linker options

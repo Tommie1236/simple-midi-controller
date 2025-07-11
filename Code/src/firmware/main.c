@@ -6,7 +6,6 @@
 #include "pico/time.h"
 #include "pico/multicore.h"
 #include "hardware/gpio.h"
-#include "hardware/spi.h"
 
 // c/cpp 
 #include <string.h> // memcpy
@@ -14,6 +13,8 @@
 // tinyusb
 #include "bsp/board.h"
 #include "tusb.h"
+
+#include "max7219_driver.h"
 
 
 void midi_task();
@@ -62,6 +63,10 @@ void core0_main(){
     multicore_launch_core1(&core1_main);
     sleep_ms(1000);
 
+    max7219_t display;
+
+    max7219_init(&display, MAX7219_SPI_PORT, MAX7219_LOAD_PIN, MAX7219_CLK_PIN, MAX7219_MOSI_PIN, MAX7219_NUM_SEGMENTS);
+
     check_debug();
 
     while(1) {
@@ -108,12 +113,12 @@ void init_gpio() {
 }
 
 void init_segment_display() {
-    spi_init(MAX7219_SPI_PORT, 10000 * 1000); // 10MHz
+    //spi_init(MAX7219_SPI_PORT, 10000 * 1000); // 10MHz
 
-    gpio_set_dir(MAX7219_LOAD_PIN, GPIO_OUT);
-    gpio_set_function(MAX7219_LOAD_PIN, GPIO_FUNC_SIO); //toggle after data transmission. not a spi cs
-    gpio_set_function(MAX7219_CLK_PIN, GPIO_FUNC_SPI);
-    gpio_set_function(MAX7219_MOSI_PIN, GPIO_FUNC_SPI);
+    //gpio_set_dir(MAX7219_LOAD_PIN, GPIO_OUT);
+    //gpio_set_function(MAX7219_LOAD_PIN, GPIO_FUNC_SIO); //toggle after data transmission. not a spi cs
+    //gpio_set_function(MAX7219_CLK_PIN, GPIO_FUNC_SPI);
+    //gpio_set_function(MAX7219_MOSI_PIN, GPIO_FUNC_SPI);
 };
 
 void init_phisical_midi () {
@@ -152,7 +157,7 @@ void midi_task() {
 
     if (debug_settings[CONTINUOUS_MIDI]) {
         no_messages_send_count++;
-        if (no_messages_send_count > 100) {
+        if (no_messages_send_count > 1000) {
             tud_midi_n_stream_write(0, 0, last_midi_message, 3);
             no_messages_send_count = 0;
         };
