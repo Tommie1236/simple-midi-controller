@@ -254,8 +254,13 @@ void key_matrix_task() {
 
         uint32_t gpio_state = gpio_get_all();
 
-        for (int collumn = 0; collumn < MATRIX_COLS; ++collumn) {
-            uint8_t pin = collumn_pins[collumn];
+        for (int col_idx = 0; col_idx < MATRIX_COLS; ++col_idx) {
+            uint8_t pin = collumn_pins[col_idx];
+
+            if (!(gpio_state & ( 1 << pin ))) {
+                
+                buttons_pressed |= ( 1 << (( row_idx * 8 ) + col_idx ));
+            }
         }
     }
 }
