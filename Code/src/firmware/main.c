@@ -25,6 +25,8 @@ void init_segment_display();
 void init_phisical_midi();
 void check_debug();
 
+max7219_t display;
+
 uint8_t current_bank = 0;
 
 uint32_t buttons_pressed = 0x00000000;
@@ -58,14 +60,11 @@ void core0_main(){
     stdio_usb_init();
 
     init_gpio();
-    // init_segment_display();
+
+    init_segment_display();
 
     multicore_launch_core1(&core1_main);
-    sleep_ms(1000);
 
-    max7219_t display;
-
-    max7219_init(&display, MAX7219_SPI_PORT, MAX7219_LOAD_PIN, MAX7219_CLK_PIN, MAX7219_MOSI_PIN, MAX7219_NUM_SEGMENTS);
 
     check_debug();
 
@@ -90,9 +89,6 @@ int main() {
 void init_gpio() {
     gpio_init_mask(matrix_out_mask | matrix_in_mask);
     gpio_set_function_masked(matrix_out_mask | matrix_in_mask, GPIO_FUNC_SIO);
-	// implement banks later
-    //gpio_init(BANK_UP_PIN);
-    //gpio_init(BANK_DOWN_PIN);
 
     gpio_set_dir_in_masked(matrix_in_mask); 
 	for (uint pin = 0; pin < 32; ++pin) {
@@ -113,12 +109,17 @@ void init_gpio() {
 }
 
 void init_segment_display() {
-    //spi_init(MAX7219_SPI_PORT, 10000 * 1000); // 10MHz
 
-    //gpio_set_dir(MAX7219_LOAD_PIN, GPIO_OUT);
-    //gpio_set_function(MAX7219_LOAD_PIN, GPIO_FUNC_SIO); //toggle after data transmission. not a spi cs
-    //gpio_set_function(MAX7219_CLK_PIN, GPIO_FUNC_SPI);
-    //gpio_set_function(MAX7219_MOSI_PIN, GPIO_FUNC_SPI);
+    max7219_init(&display,
+                 MAX7219_SPI_PORT,
+                 MAX7219_LOAD_PIN,
+                 MAX7219_CLK_PIN,
+                 MAX7219_MOSI_PIN,
+                 MAX7219_NUM_SEGMENTS);
+
+    max7219_set_decode_mode(&display, BCD_DECODE);
+
+    max7219_display_number_2_digits(&display, 0);
 };
 
 void init_phisical_midi () {
@@ -218,6 +219,7 @@ void key_matrix_task() {
         } else {
             current_bank++;
         }
+        max7219_display_number_2_digits(&display, current_bank);
     }
 
     if (!bank_down_current & bank_down_last) {
@@ -226,6 +228,7 @@ void key_matrix_task() {
         } else {
             current_bank--;
         }
+        max7219_display_number_2_digits(&display, current_bank);
     }
 
     bank_up_last = bank_up_current;

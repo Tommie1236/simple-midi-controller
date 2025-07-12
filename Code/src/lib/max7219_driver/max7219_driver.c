@@ -42,3 +42,35 @@ void max7219_send_command(max7219_t *device, uint8_t address, uint8_t data) {
     spi_write_blocking(device->spi_instance, tx_buf, 2);
     gpio_put(device->load_pin, 1);
 }
+
+
+void max7219_set_decode_mode(max7219_t *device, max7219_decode_mode_t mode) {
+
+    // mode = 1 when mode = BCD_DECODE
+    if (mode) {         // BCD_DECODE
+        max7219_send_command(device, 0x09, 0xFF);
+    } else {            // NO_DECODE
+        max7219_send_command(device, 0x09, 0x00);
+    }
+}
+
+void max7219_display_number(max7219_t *device,
+                            uint8_t segment,
+                            uint8_t number) {
+    max7219_send_command(device, segment + 1, number);
+}
+
+
+void max7219_display_number_2_digits(max7219_t *device,
+                            uint8_t number) {
+
+    if (number < 0 || number > 99) {
+        max7219_send_command(device, 0x01, 0x00);
+        max7219_send_command(device, 0x02, 0x00);
+        return;
+    }
+
+    max7219_display_number(device, 0, number / 10);
+    max7219_display_number(device, 1, number % 10);
+}
+
