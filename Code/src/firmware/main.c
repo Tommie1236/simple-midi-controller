@@ -19,11 +19,11 @@
 
 void midi_task();
 void key_matrix_task();
-void segment_display_task();
 void init_gpio();
 void init_segment_display();
 void init_phisical_midi();
 void check_debug();
+void write_midi(uint8_t const* message, uint8_t lenght);
 
 max7219_t display;
 
@@ -49,22 +49,22 @@ bool debug_settings[NUM_DEBUG_MODES];
 
 
 void core1_main(){
+
     while (1){
         tud_task();
     }
 };
 
 void core0_main(){
+
     board_init(); 
     tusb_init();
     stdio_usb_init();
 
     init_gpio();
-
     init_segment_display();
 
     multicore_launch_core1(&core1_main);
-
 
     check_debug();
 
@@ -72,7 +72,6 @@ void core0_main(){
         key_matrix_task();
         midi_task();
         sleep_ms(1);
-        //segment_display_task();
 	};
 };
 
@@ -87,10 +86,12 @@ int main() {
 
 
 void init_gpio() {
+
     gpio_init_mask(matrix_out_mask | matrix_in_mask);
     gpio_set_function_masked(matrix_out_mask | matrix_in_mask, GPIO_FUNC_SIO);
 
     gpio_set_dir_in_masked(matrix_in_mask); 
+
 	for (uint pin = 0; pin < 32; ++pin) {
 		if (matrix_in_mask & (1u << pin)) {
 
@@ -127,15 +128,28 @@ void init_phisical_midi () {
     // gpio_set_function(MIDI_RX_PIN, GPIO_FUNC_UART);
 };
 
+void write_midi(uint8_t const* message, uint8_t lenght) {
+
+    #ifdef USB_MIDI_ENABLE
+    tud_midi_n_stream_write(0, 0, message, lenght);
+    #endif // USB_MIDI_ENABLE
+
+    #ifdef PHY_MIDI_ENABLE
+    // write phy midi
+    #endif
+
+}
+
 void check_debug() {
 
+    // also print these as active if set in header
     debug_settings[DISPLAY_LAST_BUTTON] = DEBUG_DISPLAY_LAST_BUTTON;
     debug_settings[PRINT_PRESSED] = DEBUG_PRINT_PRESSED;
     debug_settings[CONTINUOUS_MIDI] = DEBUG_CONTINUOUS_MIDI;
 
     // read keyboard for debug keys
     key_matrix_task();
-    printf("buttons: %08X \n", (int)buttons_pressed);
+    // printf("buttons: %08X \n", (int)buttons_pressed);
 
     if (buttons_pressed & 1) {
         debug_settings[DISPLAY_LAST_BUTTON] = true;
@@ -159,7 +173,7 @@ void midi_task() {
     if (debug_settings[CONTINUOUS_MIDI]) {
         no_messages_send_count++;
         if (no_messages_send_count > 1000) {
-            tud_midi_n_stream_write(0, 0, last_midi_message, 3);
+            write_midi(last_midi_message, 3);
             no_messages_send_count = 0;
         };
     };
@@ -193,7 +207,8 @@ void midi_task() {
                     printf("Button %d released\n", i);
                 };               
             }
-            tud_midi_n_stream_write(0, 0, msg, 3);
+
+            write_midi(msg, 3);
             memcpy(last_midi_message, msg, sizeof(msg));
             no_messages_send_count = 0;
 

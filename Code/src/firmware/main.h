@@ -68,8 +68,10 @@
 #define MAX7219_MOSI_PIN            27
 
 // phiysical midi. maybe support later
-// #define MIDI_TX_PIN              28
-// #define MIDI_RX_PIN              29
+#define USB_MIDI_ENABLE             true
+#define PHY_MIDI_ENABLE             true 
+#define PHY_MIDI_TX_PIN             28
+#define PHY_MIDI_RX_PIN             29
 
 
 const uint32_t matrix_out_mask =  (1 << ROW_0_PIN) | 
