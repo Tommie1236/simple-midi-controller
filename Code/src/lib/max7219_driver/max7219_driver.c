@@ -17,7 +17,8 @@ void max7219_init(max7219_t *device,
     device->mosi_pin = mosi_pin;
     device->num_digits = num_digits;
 
-    spi_init(device->spi_instance, 10000 * 1000);
+    // max7219 supports up to 10MHz
+    spi_init(device->spi_instance, 10000 * 1000)
     spi_set_format(device->spi_instance, 8, SPI_CPOL_0, SPI_CPHA_0, SPI_MSB_FIRST);
 
     gpio_set_function(device->clk_pin, GPIO_FUNC_SPI);
@@ -30,7 +31,7 @@ void max7219_init(max7219_t *device,
 
     max7219_send_command(device, 0x0F, 0x00);   // turn off test mode
     max7219_send_command(device, 0x0B, device->num_digits - 1 );    // set scan limit to x digits
-    max7219_send_command(device, 0x0A, 0x00);   // set brightness to max (15)
+    max7219_send_command(device, 0x0A, 0x00);   // set brightness to minimum (0)
     max7219_send_command(device, 0x0C, 0x01);   // move device out of shutdown mode
 }
 
@@ -64,7 +65,7 @@ void max7219_display_number(max7219_t *device,
 void max7219_display_number_2_digits(max7219_t *device,
                             uint8_t number) {
 
-    if (number < 0 || number > 99) {
+    if (number > 99) {
         max7219_send_command(device, 0x01, 0x00);
         max7219_send_command(device, 0x02, 0x00);
         return;

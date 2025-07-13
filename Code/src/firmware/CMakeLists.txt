@@ -39,6 +39,7 @@ target_compile_options(firmware PRIVATE
     -fno-check-new 
     $<$<COMPILE_LANGUAGE:CXX>:-fno-enforce-eh-specs>
     -g 
+    -Os
     -ffunction-sections 
     -fdata-sections 
     -O3
@@ -49,7 +50,7 @@ target_compile_options(firmware PRIVATE
 
 # preprocessor macros
 target_compile_definitions(firmware PRIVATE 
-    PICO_HEAP_SIZE=2048
+    PICO_HEAP_SIZE=0
     PICO_XOSC_STARTUP_DELAY_MULTIPLIER=64
 )
 
@@ -59,9 +60,10 @@ target_compile_definitions(firmware PRIVATE
 
 # create map/bin/hex file etc.
 pico_add_extra_outputs(firmware)
-  
 
 # linker options
+add_link_options(-Wl,--gc-sections)
+add_link_options(-s)
 target_link_options(firmware
     PRIVATE "LINKER:--print-memory-usage"
 )

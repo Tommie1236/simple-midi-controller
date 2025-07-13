@@ -71,7 +71,6 @@ void core0_main(){
     while(1) {
         key_matrix_task();
         midi_task();
-        sleep_ms(1);
 	};
 };
 
@@ -94,8 +93,6 @@ void init_gpio() {
 
 	for (uint pin = 0; pin < 32; ++pin) {
 		if (matrix_in_mask & (1u << pin)) {
-
-            // Change to pull down with diodes in correct orientation
 			gpio_pull_up(pin);
 		}
 	}
@@ -182,7 +179,10 @@ void midi_task() {
         printf("buttons: %08X \n", (int)buttons_pressed);
     };
 
-    msg[0] = 0x90 | (current_bank / 4); 
+    // note on message (0x9X)
+    // ored with the bank / 4 because a bank has 32 buttons and there are 128 notes per midi channel
+    // so 4 banks per midi channel
+    msg[0] = 0x90 | (current_bank / 4);
 
     for (int i = 0; i < 32; i++) {
         uint32_t mask = 1 << i;
@@ -228,7 +228,7 @@ void key_matrix_task() {
     bool bank_up_current = gpio_get(BANK_UP_PIN);
     bool bank_down_current = gpio_get(BANK_DOWN_PIN);
 
-    if (!bank_up_current & bank_up_last) {
+    if (!bank_up_current && bank_up_last) {
         if (current_bank == 63) {
             current_bank = 0;
         } else {
@@ -237,7 +237,7 @@ void key_matrix_task() {
         max7219_display_number_2_digits(&display, current_bank);
     }
 
-    if (!bank_down_current & bank_down_last) {
+    if (!bank_down_current && bank_down_last) {
         if (current_bank == 0) {
             current_bank = 63;
         } else {
