@@ -29,9 +29,9 @@ void init_segment_display();
 void init_lvgl();
 void lvgl_task();
 void lvgl_update_bank(uint8_t bank);
-void init_phisical_midi();
+void init_physical_midi();
 void check_debug();
-void write_midi(uint8_t const* message, uint8_t lenght);
+void write_midi(uint8_t const* message, uint8_t length);
 
 max7219_t display;
 
@@ -133,15 +133,15 @@ void init_segment_display() {
     max7219_display_number_2_digits(&display, 0);
 };
 
-void init_phisical_midi () {
+void init_physical_midi () {
     // gpio_set_function(MIDI_TX_PIN, GPIO_FUNC_UART);
     // gpio_set_function(MIDI_RX_PIN, GPIO_FUNC_UART);
 };
 
-void write_midi(uint8_t const* message, uint8_t lenght) {
+void write_midi(uint8_t const* message, uint8_t length) {
 
     #ifdef USB_MIDI_ENABLE
-    tud_midi_n_stream_write(0, 0, message, lenght);
+    tud_midi_n_stream_write(0, 0, message, length);
     #endif // USB_MIDI_ENABLE
 
     #ifdef PHY_MIDI_ENABLE

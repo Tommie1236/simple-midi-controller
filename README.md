@@ -8,6 +8,8 @@
   32 configurable buttons
   Multiple banks for expanded control
   USB MIDI device class (works out-of-the-box with most DAWs and lighting control software)
+  MAX7219 7-segment display for bank number
+  LVGL graphics library integration for future graphical display support
   Example use: MyDMX, generic macropad for other MIDI-compatible software
 
 ## Hardware
@@ -20,6 +22,7 @@
 
   Raspberry Pi Pico SDK
   TinyUSB
+  LVGL v9.4.0 (Light and Versatile Graphics Library)
 
 ## Building and Flashing
 
@@ -31,6 +34,9 @@
 ## Usage
 
 Once flashed, the controller will appear as a standard USB MIDI device. It should work with any MIDI-compatible software. Currently tested with MyDMX, but suitable for general MIDI macro control.
+
+For information about the LVGL graphics library integration, see [Code/LVGL_INTEGRATION.md](Code/LVGL_INTEGRATION.md).
+
 Pin Configuration
 
   Default pin mappings are defined in the code for RP2040-Zero.
@@ -38,8 +44,9 @@ Pin Configuration
 
 ## Roadmap
 
-  - [ ] implement segment display
-  - [ ] add banking support
+  - [x] implement segment display
+  - [x] add banking support
+  - [x] add LVGL graphics library for future graphical display/menu support
   - [ ] add a menu for configuration?
   - [ ] Add full hardware assembly and wiring instructions
   - [x] create pcb for easier replication without the big amount of soldering perfboard requires.

@@ -22,7 +22,7 @@ static lv_color_t disp_buf2[DISP_HOR_RES * 10];  /* Partial buffer 2 */
  * 
  * @param disp_drv Display driver
  * @param area Area to update
- * @param color_p Pixel data buffer
+ * @param px_map Pixel data buffer
  */
 static void disp_flush_cb(lv_display_t* disp_drv, const lv_area_t* area, uint8_t* px_map)
 {
