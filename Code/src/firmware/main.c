@@ -9,6 +9,7 @@
 
 // c/cpp 
 #include <string.h> // memcpy
+#include <stdio.h>
 
 // tinyusb
 #include "bsp/board.h"
@@ -16,16 +17,26 @@
 
 #include "max7219_driver.h"
 
+// lvgl
+#include "lvgl.h"
+#include "lvgl_display.h"
+
 
 void midi_task();
 void key_matrix_task();
 void init_gpio();
 void init_segment_display();
+void init_lvgl();
+void lvgl_task();
+void lvgl_update_bank(uint8_t bank);
 void init_phisical_midi();
 void check_debug();
 void write_midi(uint8_t const* message, uint8_t lenght);
 
 max7219_t display;
+
+/* LVGL UI objects */
+static lv_obj_t* bank_label = NULL;
 
 uint8_t current_bank = 0;
 
@@ -63,6 +74,7 @@ void core0_main(){
 
     init_gpio();
     init_segment_display();
+    init_lvgl();
 
     multicore_launch_core1(&core1_main);
 
@@ -71,6 +83,7 @@ void core0_main(){
     while(1) {
         key_matrix_task();
         midi_task();
+        lvgl_task();
 	};
 };
 
@@ -235,6 +248,7 @@ void key_matrix_task() {
             current_bank++;
         }
         max7219_display_number_2_digits(&display, current_bank);
+        lvgl_update_bank(current_bank);
     }
 
     if (!bank_down_current && bank_down_last) {
@@ -244,6 +258,7 @@ void key_matrix_task() {
             current_bank--;
         }
         max7219_display_number_2_digits(&display, current_bank);
+        lvgl_update_bank(current_bank);
     }
 
     bank_up_last = bank_up_current;
@@ -269,4 +284,43 @@ void key_matrix_task() {
         gpio_put(row_pins[row_idx], 1);
     }
 
+}
+
+
+void init_lvgl() {
+    /* Initialize LVGL */
+    lv_init();
+    
+    /* Initialize display driver */
+    lv_display_t* disp = lvgl_display_init();
+    if (disp == NULL) {
+        printf("Failed to initialize LVGL display\n");
+        return;
+    }
+    
+    /* Create a simple UI showing the bank number */
+    lv_obj_t* scr = lv_screen_active();
+    
+    /* Create a label to show bank number */
+    bank_label = lv_label_create(scr);
+    lv_obj_set_style_text_font(bank_label, &lv_font_montserrat_14, 0);
+    lv_label_set_text(bank_label, "Bank: 00");
+    lv_obj_align(bank_label, LV_ALIGN_CENTER, 0, 0);
+    
+    printf("LVGL initialized\n");
+}
+
+
+void lvgl_task() {
+    /* Handle LVGL timer and refresh tasks */
+    lv_timer_handler();
+}
+
+
+void lvgl_update_bank(uint8_t bank) {
+    if (bank_label != NULL) {
+        char buf[16];
+        snprintf(buf, sizeof(buf), "Bank: %02d", bank);
+        lv_label_set_text(bank_label, buf);
+    }
 }

@@ -1,3 +1,6 @@
 [submodule "Code/lib/pico-sdk"]
 	path = Code/lib/pico-sdk
 	url = https://github.com/raspberrypi/pico-sdk
+[submodule "Code/lib/lvgl"]
+	path = Code/lib/lvgl
+	url = https://github.com/lvgl/lvgl.git

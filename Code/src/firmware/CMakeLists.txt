@@ -3,11 +3,13 @@
 add_executable(firmware
   main.c
   usb_descriptors.c
+  lvgl_display.c
 )
 
 
 target_include_directories(firmware PRIVATE
-${CMAKE_CURRENT_LIST_DIR})
+${CMAKE_CURRENT_LIST_DIR}
+${CMAKE_CURRENT_LIST_DIR}/../../../lib/lvgl)
 
 # link in libraries (almost every hardware/<blah>.h or pico/<blah>.h is hardware_blah or pico_blah)
 target_link_libraries(firmware PRIVATE
@@ -20,6 +22,7 @@ target_link_libraries(firmware PRIVATE
     pico_unique_id
 
     max7219_driver
+    lvgl
 )
 
 # enable usb/uart stdout

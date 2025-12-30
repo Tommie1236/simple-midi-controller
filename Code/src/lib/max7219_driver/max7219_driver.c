@@ -18,7 +18,7 @@ void max7219_init(max7219_t *device,
     device->num_digits = num_digits;
 
     // max7219 supports up to 10MHz
-    spi_init(device->spi_instance, 10000 * 1000)
+    spi_init(device->spi_instance, 10000 * 1000);
     spi_set_format(device->spi_instance, 8, SPI_CPOL_0, SPI_CPHA_0, SPI_MSB_FIRST);
 
     gpio_set_function(device->clk_pin, GPIO_FUNC_SPI);
